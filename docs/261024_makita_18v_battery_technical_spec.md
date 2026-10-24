@@ -4,7 +4,17 @@
 ## 1. 개요 (Overview)
 본 문서는 AliExpress에서 구매한 마키타(Makita) 18V LXT 호환 배터리 팩을 전원 소스로 활용하여 다양한 임베디드 및 하드웨어 응용 기기(Application)를 개발하기 위한 기술 사양 및 엔지니어링 가이드라인을 정의합니다.
 
-- **대상 제품 링크**: [AliExpress 마키타 호환 18V 배터리 (Item ID: 1005013134957744)](https://ko.aliexpress.com/item/1005013134957744.html?spm=a2g0o.order_list.order_list_main.23.4803140fX5nOCd&tblci=GiCS9h0KKgkDTGY9im3LGsf1GfiWaDaM2M480C6x2QXXZiCnqXUorOThsf72yMPqATCCong&gatewayAdapt=glo2kor)
+### 1.1 구매 정보 (Order Details)
+
+![AliExpress 배터리 구매 내역](./images/261024_aliexpress_order_makita_battery.png)
+
+- **제품명**: 100% 정품 마키타 배터리, 18V 충전식 배터리, 마키타 BL1830, BL1840, BL1850, BL1860B 전동 공구 배터리 교체용
+- **구매처 링크**: [AliExpress 상품 페이지 (Item ID: 1005013134957744)](https://ko.aliexpress.com/item/1005013134957744.html?spm=a2g0o.order_list.order_list_main.23.4803140fX5nOCd&tblci=GiCS9h0KKgkDTGY9im3LGsf1GfiWaDaM2M480C6x2QXXZiCnqXUorOThsf72yMPqATCCong&gatewayAdapt=glo2kor)
+- **스토어**: Shop1105399295 Store
+- **주문일자**: 2026년 10월 4일
+- **주문번호**: `1123100589167627`
+- **구매 옵션**: **2PCS-6.0Ah-charger** (6.0Ah 배터리 2개 + 충전기 1개 세트)
+- **구매 가격**: US $31.71
 - **호환 규격**: Makita 18V LXT 시스템 (BL1815, BL1830, BL1840, BL1850, BL1860B 계열)
 - **문서 목적**: 전원 인출 핀아웃, 전압 및 방전 특성, BMS 보호 회로 동작 방식, DIY 응용 회로 설계 시 필수 요구사항 및 안전 가이드라인 수립
 
@@ -61,30 +71,79 @@
 
 ---
 
-## 4. 단자 핀아웃 (Terminal Pinout & Connection Interface)
+## 4. 단자 핀아웃 및 전기적 인터페이스 (Terminal Pinout & Electrical Interface)
 
 배터리 상단 단자부를 위에서 바라볼 때 (슬라이드 방향이 전면인 기준):
 
+```
+       [ 래치 해제 버튼 (Push Latch) ]
+                 │
+  ┌──────────────┴──────────────┐
+  │   [LED 잔량 표시창 & 버튼]   │   (전면부)
+  │                             │
+  ├─────────────────────────────┤
+  │   [ - ]     [ 3rd ]   [ + ] │   (상단 메인 블레이드 단자 슬롯)
+  │ (GND 0V)   (Aux B+)  (Main B+)
+  │                             │
+  │  ┌───────────────────────┐  │
+  │  │ [1] [2] [3] [4] [5] [6]│  │   (내부 디지털 옐로우 커넥터)
+  │  └───────────────────────┘  │
+  └─────────────────────────────┘
+```
+
+---
+
 ### 4.1 메인 블레이드 단자 (Primary Blade Terminals)
 
-| 단자 명칭 | 물리적 위치 | 전압 레벨 | 기능 및 설명 |
+| 단자 명칭 | 물리적 위치 | 전압 레벨 (측정치) | 내부 연결 및 기능 설명 |
 | :---: | :---: | :---: | :--- |
-| **`+` (Positive)** | 우측 슬롯 | **+18V ~ +21V** (B+) | **주 전원 양극 단자**. 대전류 인출 및 충전 전류 유입 단자. 상시 전압 출력됨. |
-| **`TH` (Thermistor)** | 중앙 보조 슬롯 | 아날로그 신호 | **배터리 온도 감지 단자**. 내부 NTC 써미스터(10kΩ 계열)와 연결되어 고온(과열) 시 공구 및 충전기 동작 정지. |
-| **`-` (Negative)** | 좌측 슬롯 | **0V (GND / B-)** | **주 전원 음극 단자 (Ground)**. 대전류 복귀 경로. |
+| **`+` (Main B+)** | 우측 슬롯 | **+18.0V ~ +21.0V** | **주 전원 양극 단자**. 대전류(15A~40A) 모터 구동 및 메인 충전 전류 경로. 굵은 버스바 직결. |
+| **보조 단자 (3rd / Aux B+)**<br>*(구형 통칭: TH)* | 중앙 슬롯 | **+18.0V ~ +21.0V**<br>*(B+와 전압 동일)* | **PTC 보호 보조 B+ 전원 단자**. B+ 라인과 **약 1.2 Ω 파워 PPTC 소자**를 통해 연결됨. 공구 로직 전원 공급 및 쇼트 방지. |
+| **`-` (Main B-)** | 좌측 슬롯 | **0V (GND)** | **주 전원 음극 단자 (Ground)**. 모터 대전류 및 회로 접지 복귀 경로. |
 
-> 💡 **DIY 어플리케이션 개발 시 전원 인출**:  
-> 일반적인 외부 회로(스텝다운 컨버터, 모터 드라이버, LED 조명 등)를 구동할 때는 **`+` 단자와 `-` 단자 2가닥만 결선**하여 사용합니다. `TH` 핀은 오픈(Unconnected) 상태로 두어도 전압 출력이 유지됩니다.
+#### 🔍 보조 단자(3rd Blade)의 심층 분석 및 실측 데이터 검증
+- **실측 저항 데이터**: 메인 `+` 단자와 보조 단자 간 저항 측정 시 **약 1.2 Ω** 검출.
+- **1mV 오차 없는 전압 일치 원리 (수학적 검증)**:
+  - 디지털 멀티미터(DMM)의 전압 측정 모드는 내부 입력 임피던스가 **$10\text{ M}\Omega$ ($10,000,000\ \Omega$)**로 매우 높습니다.
+  - 1.2 Ω PTC를 거쳐 멀티미터로 흐르는 전류는 약 $2\ \mu\text{A}$ ($19.987\text{V} / 10\text{M}\Omega$)에 불과합니다.
+  - 이에 따라 1.2 Ω 양단에서 발생하는 전압 강하는 $\Delta V = 2\ \mu\text{A} \times 1.2\ \Omega \approx \mathbf{0.0024\text{ mV}}$로 실질적으로 0에 수렴하므로, `+` 단자 전압(19.987V)이 1mV 오차 없이 완벽히 동일하게 측정됩니다.
+- **정확한 용도 및 설계 목적**:
+  1. **공구 내부 제어 로직(MCU/LED/스위치) 전원 공급**: 대전류 모터 라인과 분리하여 공구 내부 제어 기판에 안정적인 전원 공급.
+  2. **파워 PPTC(Polymeric PTC)를 통한 화재/단락 방지**: 공구 내부 스위치나 LED 배선 쇼트 시 1.2 Ω PPTC가 자체 발열하여 고저항(Trip) 상태로 전환, 배터리 화재를 차단하고 정상화 시 자동 복귀.
+  3. **스타 프로텍션(Star Protection) 인터록**: 공구 본체에 "배터리 전압이 정상적으로 결합됨"을 알리는 인에이블 신호선 역할.
+- **💡 DIY 개발 활용 팁**: 소전류(아두이노 MCU, 센서, LED 등)는 이 보조 단자를 `+`로 사용하면 자체 1.2Ω 퓨즈 보호 효과를 얻을 수 있으며, 대전류 부하는 반드시 메인 `+` 단자를 사용해야 합니다.
 
-### 4.2 내부 옐로우 커넥터 (Auxiliary Yellow Connector Block)
+---
 
-- **위치**: 메인 블레이드 단자 뒤편 안쪽에 위치한 노란색 8핀 서브 커넥터
-- **기능**:
-  - 마키타 순정 급속 충전기(DC18RC, DC18RD 등) 체결 시 연결되는 데이터/센싱 포트
-  - **1-Wire 디지털 시리얼 통신**: 충전기 내 MCU와 배터리 BMS 간 통신 (배터리 ID, 셀 전압, 충전 이력 및 오류 코드 교환)
-  - **개별 셀 밸런싱 모니터링**: 5개 직렬 셀(B1, B2, B3, B4, B5)의 개별 전압 탭 연결
-- **알리 호환 배터리 특성**:  
-  호환 배터리의 경우 정품 마키타 충전기와의 호환성 에뮬레이션을 위해 소형 MCU(또는 복제 EEPROM/로직)가 내장되어 있어 순정 충전기에서도 정상 인식되어 충전 가능합니다.
+### 4.2 내부 옐로우 커넥터 (Yellow Multi-Pin Connector Block)
+
+배터리 상단 안쪽에 위치한 노란색 사출 플라스틱 하우징의 **2.54mm 피치 다핀(7~8핀) 커넥터**는 공구 사용 중에는 연결되지 않고, **마키타 순정 급속 충전기(DC18RC 등) 및 진단 장비(BTC04)와 도킹할 때만 결합되는 디지털 통신 포트**입니다.
+
+```
+          [ 노란색 커넥터 핀 배열 (Top View) ]
+        ┌───────────────────────────────────┐
+        │  [1]   [2]   [3]   [4]   [5]   [6]│  (배터리 상단 안쪽)
+        └───────────────────────────────────┘
+         (배터리 - 단자 쪽)               (배터리 + 단자 쪽)
+```
+
+#### 📌 노란색 커넥터 상세 핀아웃 (배터리 '-' 단자 쪽부터 Pin 1 기준)
+
+| 핀 번호 | 신호 명칭 (Signal) | 논리 레벨 / 인터페이스 | 상세 기능 및 역할 |
+| :---: | :--- | :--- | :--- |
+| **Pin 1** | **NC (Reserved)** | - | 미연결 또는 내부 예약 핀 |
+| **Pin 2** | **1-Wire DATA** | 양방향 디지털 시리얼 | **마키타 독점 1-Wire 시리얼 통신 데이터 라인**.<br>외부 4.7kΩ 풀업 저항(3.3V/5V)을 통해 충전기와 패킷 교환. |
+| **Pin 3** | **Internal / NC** | - | 세대별 내부 셀 탭 또는 미사용 |
+| **Pin 4** | **GND / Sense** | 0V (B-) | 센싱 및 신호용 접지 기준선 |
+| **Pin 5** | **NTC / Temp** | 아날로그 센서 신호 | 내부 셀 밀착 정밀 NTC 서미스터 온도 감지 라인 |
+| **Pin 6** | **ENABLE (Wake-Up)** | 3.3V Active-High | **BMS 통신 활성화(Wake-up) 핀**.<br>이 핀에 3.3V High 신호를 인가해야 내부 MCU가 슬립에서 깨어나 Pin 2로 응답함. |
+| **Pin 7~8**| **V+ / Guide** | + 전원 또는 가이드 | 하우징 고정 및 전원 참조 핀 |
+
+#### 📡 전송 데이터 및 핵심 제어 기능
+1. **개별 셀 전압 텔레메트리**: 5개 직렬 셀(Cell 1~5)의 개별 전압을 정밀 수신하여 밸런스 상태 감시.
+2. **배터리 수명 및 충전 사이클 카운터(Cycle Count)**: 누적 충전 횟수 및 사용 이력 관리.
+3. **정밀 온도 감지 및 충전 제어**: 내부 NTC 온도를 읽어 충전기 쿨링팬 속도 조절 및 과열 시 충전 전류 동적 감발/차단.
+4. **BMS 영구 락(Lock) 플래그 관리**: 3회 이상 비정상 충전 시 충전 거부 락(Lock)을 걸어 안전 확보 (오픈소스 OBI 프로젝트를 통해 락 해제 및 진단 가능).
 
 ---
 
@@ -188,8 +247,32 @@
 - **점검 주기**: 3~6개월 미사용 시 전압 체크 후 50% 수준으로 보충전 권장
 - **폐기 절차**: 완전 방전 후 리튬 배터리 전용 수거함 배출
 
+## 10. 관련 자료 및 레퍼런스 링크 (References & Search Links)
+
+- **마키타 공식 스타 프로텍션 시스템 소개**:
+  - [Makita Star Protection Computer Controls™ Official Overview](https://www.makitatools.com/products/details/BL1850B)
+- **오픈소스 마키타 LXT 통신 프로토콜 리버스 엔지니어링**:
+  - [GitHub: rosvall/makita-lxt-protocol (1-Wire 통신 프로토콜 및 8핀 노란색 커넥터 핀아웃 문서)](https://github.com/rosvall/makita-lxt-protocol)
+  - [GitHub: mnh-jansson/open-battery-information (Martin Jansson의 OBI 공식 원본 프로젝트)](https://github.com/mnh-jansson/open-battery-information)
+  - [GitHub: TheRepairforge/PocketOBI (ESP32-C3 기반 휴대용 마키타 배터리 진단 및 락 해제 기기 소스코드)](https://github.com/TheRepairforge/PocketOBI)
+  - [GitHub: drakosha/makita-battery-tools (마키타 1-Wire 타이밍 및 통신 라이브러리)](https://github.com/drakosha/makita-battery-tools)
+- **마키타 배터리 텔레메트리 진단 및 락(Lock) 해제 프로젝트 가이드**:
+  - [Done.land: PocketOBI (하드웨어 결선도, 부품 목록 및 펌웨어 업로드 가이드)](https://done.land/tools/power/makita/battery/pocketobi/)
+- **EEVblog 커뮤니티 하드웨어 분석**:
+  - [EEVblog: Makita 18V Battery BMS Teardown and Communication Protocol](https://www.eevblog.com/forum/projects/makita-18v-lxt-battery-protocol/)
+- **마키타 전동공구 및 배터리 시스템 특허 (USPTO)**:
+  - [US Patent US11148272B2: Power Tool and Battery Pack System](https://patents.google.com/patent/US11148272B2/en)
+  - [US Patent US20150035488A1: Battery Pack and Charging System](https://patents.google.com/patent/US20150035488A1/en)
+
 ---
 
-*작성일자: 2026-10-24*  
-*프로젝트: Makita 18V Battery Powered Applications Development*  
-*문서 버전: v1.0*
+## 11. 문서 개정 이력 (Revision History)
+
+| 버전 (Version) | 개정 일시 (Date/Time) | 주요 개정 내용 및 변경 사유 |
+| :---: | :---: | :--- |
+| **v1.3** | 2026-10-24 12:07 | • 제10절 외부 오픈소스 레퍼런스 링크 팩트체크 및 404 에러 주소 교체<br>• 실제 라이브 GitHub URL(`mnh-jansson/open-battery-information`, `rosvall/makita-lxt-protocol` 등) 검증 및 링크 갱신 |
+| **v1.2** | 2026-10-24 12:03 | • 사용자 실측 저항(1.2 Ω) 데이터를 바탕으로 제4.1절 보조 단자 규격 전면 개정 (1.2Ω 파워 PPTC 보호 보조 B+ 전원 및 0.0024mV 전압 강하 원리 수식화)<br>• 제4.2절 노란색 1-Wire 디지털 시리얼 통신 커넥터 상세 핀아웃(Pin 1~8) 및 텔레메트리 규격 추가<br>• 제10절 전문 기술 레퍼런스 및 특허 링크 신설 |
+| **v1.1** | 2026-10-24 11:34 | • 제1.1절 '구매 정보 (Order Details)' 섹션 추가<br>• AliExpress 실제 배터리 구매 내역 캡처 이미지(`docs/images/261024_aliexpress_order_makita_battery.png`) 및 구매 옵션(`2PCS-6.0Ah-charger`, $31.71) 반영 |
+| **v1.0** | 2026-10-24 10:22 | • 마키타 18V LXT 호환 리튬이온 배터리 상세 기술 사양서 최초 작성<br>• 기본 전기적 사양(5S2P 18V/21V/15V), 기구 폼팩터, 단자 기본 핀아웃, LVD 15V 보호 회로 필수 요구사항 정의 |
+
+

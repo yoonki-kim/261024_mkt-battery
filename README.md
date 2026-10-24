@@ -21,5 +21,6 @@
 
 - **[배터리 기술 사양서](docs/261024_makita_18v_battery_technical_spec.md)**: 알리익스프레스 구매 배터리 상세 스펙, 핀아웃, 전기적 특성 및 저전압 차단(LVD) 회로 설계 가이드라인
 - **[USB & Type-C 어댑터 기술 사양서](docs/261024_makita_usb_type_c_adapter_technical_spec.md)**: 알리익스프레스 구매 USB/Type-C 양방향 충방전 어댑터 스펙, 내부 보호 회로 및 활용 방안
+- **[프로젝트 작업 이력서](docs/261024_work_history.md)**: 작업 세션별 진행 내역, 결정 사항, 파일 트리 및 향후 로드맵
 - **[문서 인덱스](docs/README.md)**: `docs/` 디렉터리 문서 안내
 - **[프로젝트 규칙 및 메모리](AGENTS.md)**: AI 에이전트 작업 지침 및 파일 명명 규칙
