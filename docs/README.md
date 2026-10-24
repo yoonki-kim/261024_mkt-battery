@@ -12,6 +12,11 @@
    - 메인 블레이드 단자(+, -, TH) 및 옐로우 통신 커넥터 핀아웃
    - BMS 보호 회로 및 DIY 프로젝트 시 필수 **저전압 차단(LVD)** 요구사항
    - LED 잔량 표시계 동작 특성 및 충전 가이드라인
+2. **[마키타 18V 배터리용 USB & Type-C 충전 어댑터 기술 사양서](file:///Users/yoonki/myWorks/261024_mkt-battery/docs/261024_makita_usb_type_c_adapter_technical_spec.md)**
+   - 알리익스프레스 구매 정보 및 제품 외형 분석
+   - USB-A (5V/2.1A) 및 Type-C 양방향 충방전(5V/2A 출력 및 5V/9V 입력 승압 충전) 스펙
+   - 마키타 배터리 파워뱅크화 및 임베디드 장비 전원 공급 활용 방안
+   - 내장 저전압 차단(LVD) 보호 및 엔지니어링 주의점
 
 ---
 
