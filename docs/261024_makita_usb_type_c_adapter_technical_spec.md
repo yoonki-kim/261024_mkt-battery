@@ -7,7 +7,7 @@
 
 ### 1.1 구매 정보
 
-![AliExpress 구매 내역](file:///Users/yoonki/myWorks/261024_mkt-battery/docs/images/261024_aliexpress_order_makita_usb_adapter.png)
+![AliExpress 구매 내역](./images/261024_aliexpress_order_makita_usb_adapter.png)
 
 - **제품명**: 마키타 18V용 USB 및 타입-C 배터리 홀더 / 충전 어댑터 (Makita 18V Battery USB & Type-C Power Source Adapter)
 - **구매처 링크**: [AliExpress 상품 페이지 (Item ID: 1005006846372297)](https://ko.aliexpress.com/item/1005006846372297.html?spm=a2g0o.order_list.order_list_main.29.4803140fX5nOCd&tblci=GiCS9h0KKgkDTGY9im3LGsf1GfiWaDaM2M480C6x2QXXZiCnqXUorOThsf72yMPqATCCong&gatewayAdapt=glo2kor)
