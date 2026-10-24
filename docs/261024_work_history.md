@@ -15,14 +15,21 @@
 │       ├── file_naming.md                                  # 파일명 날짜 접두사 규칙
 │       └── project_workflow_rules.md                       # Git 정책 및 역순 작업이력 규칙
 ├── 00_마키다 배터리 기술사양/                              # 배터리 사양 PDF 보관 폴더
-│   └── 261024_makita_18v_battery_technical_spec_v1.3.pdf  # 배터리 사양서 PDF 문서
+│   ├── 261024_makita_18v_battery_technical_spec_v1.3.pdf  # 배터리 사양서 PDF 문서
+│   └── 261024_makita_battery_genuine_vs_counterfeit_guide.pdf # 배터리 정품 구별 가이드 PDF 문서
 ├── 01_USB-A & USB-C 전원출력 모듈/                          # 1차 어플리케이션 모듈 작업 폴더
 │   └── 261024_makita_usb_type_c_adapter_technical_spec.pdf # 사양서 PDF 문서
+├── 02_전원출력 아답터/                                      # 2차 전원 인출 도크 어댑터 작업 폴더
+│   └── 261024_makita_power_dock_adapter_technical_spec.pdf # 도크 어댑터 사양서 PDF 문서
 ├── docs/
 │   ├── images/
 │   │   ├── 261024_aliexpress_order_makita_battery.png      # 배터리 구매 캡처 이미지
+│   │   ├── 261024_aliexpress_order_makita_power_dock_adapter.png # 도크 어댑터 구매 캡처 이미지
 │   │   └── 261024_aliexpress_order_makita_usb_adapter.png  # USB 어댑터 구매 캡처 이미지
 │   ├── 261024_makita_18v_battery_technical_spec.md         # 마키타 18V 배터리 상세 사양서 (v1.3)
+│   ├── 261024_makita_battery_genuine_vs_counterfeit_guide.md # 마키타 배터리 정품 vs 가품 구별 가이드
+│   ├── 261024_makita_power_dock_adapter_technical_spec.md  # DIY 전원 인출 도크 어댑터 상세 사양서 (v1.0)
+│   ├── 261024_makita_smart_iot_power_timer_proposal.md    # IoT 센서용 스마트 전원공급 타이머 기술 제안서 (v1.0)
 │   ├── 261024_makita_usb_type_c_adapter_technical_spec.md  # USB & Type-C 어댑터 상세 사양서 (v1.1)
 │   ├── 261024_work_history.md                              # 본 작업 이력서 (최신순 누적)
 │   └── README.md                                           # docs 디렉터리 문서 인덱스
@@ -35,15 +42,61 @@
 
 ## 🎯 다음 작업 예정 (Next Steps)
 
-1. [ ] 배터리 전원 응용 어플리케이션 선정 및 세부 회로 설계:
+1. [ ] **IoT 센서용 스마트 전원공급 타이머 PoC 프로토타입 제작**:
+   - ESP32-C3 / RTC(DS3231) + P-MOSFET 하이사이드 스위치 회로 검증
+   - 15.0V LVD 전압 비교기 및 BLE 기반 스케줄링 웹 인터페이스 개발
+2. [ ] 기타 배터리 전원 응용 어플리케이션 검토:
    - 후보 A: 고출력 USB-PD 65W/100W 파워뱅크 모듈 설계
    - 후보 B: 12V 10A 대전류 강압(Buck) 전원 공급기 설계 (차량용 시거잭/캠핑 냉장고용)
    - 후보 C: 디지털 전압계 및 15.0V 저전압 차단(LVD) 통합 배터리 독 모듈 제작
-2. [ ] 사용자 추가 요구사항 및 하드웨어 연동 테스트 준비
+3. [ ] 사용자 추가 요구사항 및 하드웨어 연동 테스트 준비
 
 ---
 
 ## ⏱️ 작업 이력 로그 (최신순 정렬)
+
+### 📌 [2026-10-24 13:15] 마키타 18V 배터리 기반 IoT 센서용 스마트 전원공급 타이머 기술 제안서 수립
+- **작업 내용**:
+  - 도크 어댑터의 18V 전원을 활용하여 IoT 센서 노드에 지능적인 시간 설정 급전을 구현하기 위한 상세 아키텍처 제안서 작성.
+  - 신규 문서 작성: [`docs/261024_makita_smart_iot_power_timer_proposal.md`](file:///Users/yoonki/myWorks/261024_mkt-battery/docs/261024_makita_smart_iot_power_timer_proposal.md)
+  - **4대 핵심 엔지니어링 솔루션 도출**:
+    1. **초저 대기전류 ($< 15\ \mu\text{A}$)**: 2단계 전원 분리(Power Gating) 구조로 비가동 시 벅 컨버터와 부하 전원을 완전히 물리적 차단(누설전류 0.1µA).
+    2. **하드웨어 15.0V LVD**: 배터리 방전 종지 전압 도달 시 영구 차단(Latch-off)하여 배터리 사망 방지.
+    3. **스마트 UX 스케줄링**: ESP32-C3 기반 BLE/Web Bluetooth 연동으로 스마트폰 앱 없이 요일/시간대별 정밀 스케줄 및 배터리 전압 원격 모니터링.
+    4. **하이사이드 P-MOSFET 스위칭 & 고효율 벅(TPS54302)**: 18V ➡️ 5V(3A) / 3.3V(1A) 고효율(95%) 변환.
+
+---
+
+### 📌 [2026-10-24 12:38] 마키타 18V 배터리 DIY 전원 인출 도크 어댑터 기술 사양서 수립
+- **작업 내용**:
+  - AliExpress 구매 제품(`1005009306461029`, Pawtoe Tool Store, US $3.22)의 실측 및 기구/전기적 상세 사양서 작성.
+  - 신규 사양서 작성: [`docs/261024_makita_power_dock_adapter_technical_spec.md`](file:///Users/yoonki/myWorks/261024_mkt-battery/docs/261024_makita_power_dock_adapter_technical_spec.md)
+  - 구매 내역 이미지 보관: [`docs/images/261024_aliexpress_order_makita_power_dock_adapter.png`](file:///Users/yoonki/myWorks/261024_mkt-battery/docs/images/261024_aliexpress_order_makita_power_dock_adapter.png)
+  - **핵심 사양 및 엔지니어링 분석**:
+    1. **기구 규격**: 마키타 LXT 슬라이드 락 호환, 장착용 나사 홀(31mm / 25mm / 39.3mm 카운터싱크 홀) 내장.
+    2. **전기 규격**: 14AWG 실리콘/PVC 고내열 전선(13~15cm), 연속 15~20A(피크 30~40A) 허용, DC 18~21V 직결 인출.
+    3. **⚠️ 필수 안전 가이드라인 수립**:
+       - 보호 회로가 전혀 없는 직결 도크이므로, 배터리 영구 방전을 방지하기 위해 **반드시 외부 15.0V 저전압 차단(LVD) 회로** 연결 필수.
+       - 단락(쇼트) 화재 방지를 위해 **붉은색(+) 배선에 15A~20A 인라인 블레이드 퓨즈** 설치 의무화.
+       - 역방향 배터리 충전 절대 금지 (방전 전용 커넥터).
+    4. **DIY 응용 프로젝트 매핑**: 고출력 USB-PD 파워뱅크, 12V 10A 강압 전원 공급기, 전동차 튜닝, 작업등 연결 방안 수록.
+
+---
+
+### 📌 [2026-10-24 12:22] 마키타 18V 배터리 정품 vs 가품(위조품) 구별 종합 가이드 문서화
+- **작업 내용**:
+  - 사용자 질의에 대응하여 마키타 18V LXT 배터리 정품과 가품(위조/호환품)을 정확히 판별하기 위한 종합 엔지니어링 가이드라인 수립.
+  - 신규 문서 작성: [`docs/261024_makita_battery_genuine_vs_counterfeit_guide.md`](file:///Users/yoonki/myWorks/261024_mkt-battery/docs/261024_makita_battery_genuine_vs_counterfeit_guide.md)
+  - **핵심 감별 체계 수립**:
+    1. **무게 실측**: BL1860B 기준 정품 625~645g vs 가품 480~550g (600g 미만은 100% 가품).
+    2. **LED 잔량창**: 사각형 확산 렌즈(면발광) 및 빛샘 방지 차광벽 유무 (가품은 점발광 및 빛번짐).
+    3. **나사 봉인 캡 & 나사 규격**: 흰색 플라스틱 봉인 핀 & 보안 별나사(T10H) vs 고무마개/일반나사.
+    4. **단자부 & 스타 마크(★)**: 정교한 스타 프로텍션 각인 및 선명한 마키타 옐로우 통신 블록.
+    5. **바닥면 각인 & 라벨**: `>PC<` 플라스틱 재질 각인 방향(가품은 거꾸로 뒤집힘 다수) 및 레이저 인쇄 품질.
+    6. **순정 충전기(DC18RC) 반응**: 1-Wire 디지털 통신을 통한 즉각적인 쿨링팬 고속 회전 및 멜로디 작동 여부.
+    7. **내부 티어다운(Teardown)**: Murata/Sony/Samsung SDI 고방전 셀, 기판 전체 방수/방진 우레탄 포팅, 순수 니켈 버스바 검증.
+
+---
 
 ### 📌 [2026-10-24 12:11] 개별 문서의 개정 이력 누적 보존 규칙 수립 및 산출물 반영
 - **작업 내용**:
